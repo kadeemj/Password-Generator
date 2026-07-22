@@ -2,7 +2,7 @@
 
 A local-first password and passphrase generator. Everything runs in your browser — nothing is stored or sent anywhere.
 
-**Live stack:** Vite · React 19 · TypeScript · Web Crypto
+**Stack:** Vite · React 19 · TypeScript · Web Crypto
 
 ## Features
 
