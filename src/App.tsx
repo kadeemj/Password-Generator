@@ -253,12 +253,12 @@ function App() {
                   id={lengthId}
                   className="slider"
                   type="range"
-                  min={4}
-                  max={8}
+                  min={5}
+                  max={10}
                   value={wordCount}
                   onChange={(e) => setWordCount(Number(e.target.value))}
                   style={{
-                    ['--fill' as string]: `${((wordCount - 4) / (8 - 4)) * 100}%`,
+                    ['--fill' as string]: `${((wordCount - 5) / (10 - 5)) * 100}%`,
                   }}
                 />
               </div>
@@ -272,7 +272,10 @@ function App() {
           </div>
         </div>
 
-        <p className="footer-note">Uses Web Crypto. Nothing is stored or sent.</p>
+        <p className="footer-note">
+          Uses Web Crypto API. Strength is an estimate. Clipboard copy stays on
+          this device until cleared.
+        </p>
       </main>
     </div>
   )
