@@ -1,44 +1,74 @@
 # Password Generator
 
-A local-first password and passphrase generator. Everything runs in your browser — nothing is stored or sent anywhere.
+Local-first passwords and passphrases. Generation stays in your browser — nothing is stored or sent to a server.
 
-**Stack:** Vite · React 19 · TypeScript · Web Crypto
+**Stack:** Vite · React 19 · TypeScript · Web Crypto API
 
 ## Features
 
-- Cryptographically secure passwords via `crypto.getRandomValues` (no `Math.random`)
-- Length control (8–64) with uppercase, lowercase, numbers, and symbols
-- Option to exclude ambiguous characters (`0`, `O`, `I`, `l`, `1`)
-- Passphrase mode using the [EFF large wordlist](https://www.eff.org/dice) (7776 words, 5–10 words)
-- Entropy-based strength meter (Weak → Excellent)
-- One-click copy with confirmation
-- Self-hosted fonts — no third-party network requests at runtime
+| Mode | Controls | Notes |
+|------|----------|--------|
+| **Password** | Length 8–64 · upper / lower / numbers / symbols · exclude ambiguous (`0 O I l 1`) | Unbiased CSPRNG sampling + Fisher–Yates shuffle; at least one character from each enabled set when length allows |
+| **Passphrase** | 5–10 words (default 6) | [EFF large wordlist](https://www.eff.org/dice) (7,776 words ≈ 12.9 bits each) |
+
+Also:
+
+- Strength meter from estimated entropy (Weak → Excellent)
+- One-click copy via the Clipboard API
+- Self-hosted fonts (`@fontsource/*`) — no Google Fonts or analytics at runtime
+
+## How randomness works
+
+Passwords and passphrases use `crypto.getRandomValues`, not `Math.random`:
+
+1. **Rejection sampling** for uniform indices (avoids modulo bias)
+2. **Fisher–Yates** shuffle for password character order
+3. Word picks are independent indices into the EFF list
 
 ## Quick start
 
 ```bash
 npm install
-npm run dev
-```
-
-Open the URL Vite prints (usually `http://localhost:5173`).
-
-```bash
+npm run dev      # local dev server (usually http://localhost:5173)
 npm run build    # production build → dist/
-npm run preview  # preview the production build
+npm run preview  # serve the production build
+npm run lint     # oxlint
 ```
 
-## Privacy & security notes
+## Privacy & security
 
-- **Client-side only.** Generation uses the Web Crypto API in your browser. Passwords and passphrases are not uploaded, logged, or stored by this app.
-- **No third-party calls.** Fonts ship with the app (`@fontsource/*`). There is no analytics, auth, or backend.
-- **Strength is an estimate.** The meter reports approximate ideal entropy (`length × log2(charset)` or `words × log2(7776)`). It does not model dictionary attacks on short random passwords, clipboard malware, or site-specific password rules.
-- **Clipboard.** “Copy” writes to the system clipboard via the Clipboard API. Clear the clipboard after use if you share a machine.
-- **Shoulder surfing.** Generated secrets are shown on screen so you can inspect them. Generate privately when needed.
-- **Passphrase defaults.** Five words ≈ 65 bits; six words (default) ≈ 78 bits; seven+ for higher assurance when stakes are high.
+- **Client-side only.** Secrets are never uploaded, logged, or persisted by this app.
+- **No backend / third-party calls** for generation. Fonts ship with the build.
+- **Strength is an estimate.** Ideal entropy only (`length × log₂(charset)` or `words × log₂(7776)`). It does not model site rules, reuse, or malware.
+- **Clipboard.** Copy writes to the system clipboard; clear it on shared machines.
+- **On-screen display.** Secrets are visible for inspection — generate somewhere private when that matters.
+
+### Passphrase entropy (approx.)
+
+| Words | Bits | Typical meter |
+|------:|-----:|---------------|
+| 5 | ~65 | Strong |
+| 6 (default) | ~78 | Strong |
+| 7 | ~90 | Excellent |
+| 10 | ~129 | Excellent |
+
+## Project layout
+
+```
+src/
+  App.tsx              # UI
+  lib/generate.ts      # password CSPRNG
+  lib/passphrase.ts    # phrase generation
+  lib/strength.ts      # entropy meter
+  lib/wordlist.ts      # EFF large list
+```
 
 ## License
 
 MIT
 
-EFF wordlist: [Creative Commons Attribution](https://www.eff.org/copyright)
+EFF large wordlist © Electronic Frontier Foundation, licensed under [CC-BY](https://www.eff.org/copyright).
+
+## Author
+
+[Kadeem Jeffery](https://github.com/kadeemj) · kj@lavacrypt.com
