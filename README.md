@@ -1,19 +1,19 @@
 # Password Generator
 
-Local-first passwords and passphrases. Generation stays in your browser — nothing is stored or sent to a server.
+Local-first passwords and passphrases. Generation stays in your browser. This app does not intentionally send secrets to a server.
 
 **Stack:** Vite · React 19 · TypeScript · Web Crypto API
 
 ## Features
 
-| Mode | Controls | Notes |
-|------|----------|--------|
-| **Password** | Length 8–64 · upper / lower / numbers / symbols · exclude ambiguous (`0 O I l 1`) | Unbiased CSPRNG sampling + Fisher–Yates shuffle; at least one character from each enabled set when length allows |
-| **Passphrase** | 5–10 words (default 6) | [EFF large wordlist](https://www.eff.org/dice) (7,776 words ≈ 12.9 bits each) |
+| Mode           | Controls                                                                          | Notes                                                                                                   |
+| -------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **Password**   | Length 8–64 · upper / lower / numbers / symbols · exclude ambiguous (`0 O I l 1`) | CSPRNG sampling + Fisher–Yates shuffle; at least one character from each enabled set when length allows |
+| **Passphrase** | 5–10 words (default 6)                                                            | [EFF large wordlist](https://www.eff.org/dice) (7,776 words ≈ 12.9 bits each)                           |
 
 Also:
 
-- Strength meter from estimated entropy (Weak → Excellent)
+- Strength meter from an ideal search-space estimate (Weak → Excellent)
 - One-click copy via the Clipboard API
 - Self-hosted fonts (`@fontsource/*`) — no Google Fonts or analytics at runtime
 
@@ -37,20 +37,20 @@ npm run lint     # oxlint
 
 ## Privacy & security
 
-- **Client-side only.** Secrets are never uploaded, logged, or persisted by this app.
+- **Client-side only.** Secrets are not intentionally uploaded, logged, or stored in browser storage. The current secret remains in page memory.
 - **No backend / third-party calls** for generation. Fonts ship with the build.
-- **Strength is an estimate.** Ideal entropy only (`length × log₂(charset)` or `words × log₂(7776)`). It does not model site rules, reuse, or malware.
-- **Clipboard.** Copy writes to the system clipboard; clear it on shared machines.
+- **Strength is an estimate.** The meter shows ideal search-space size (`length × log₂(charset)` or `words × log₂(7776)`). It does not model site rules, reuse, or malware.
+- **Clipboard.** Copy writes to the system clipboard. Use **Clear clipboard** when finished. Clipboard history and other applications may retain previous copies.
 - **On-screen display.** Secrets are visible for inspection — generate somewhere private when that matters.
 
 ### Passphrase entropy (approx.)
 
-| Words | Bits | Typical meter |
-|------:|-----:|---------------|
-| 5 | ~65 | Strong |
-| 6 (default) | ~78 | Strong |
-| 7 | ~90 | Excellent |
-| 10 | ~129 | Excellent |
+|       Words | Bits | Typical meter |
+| ----------: | ---: | ------------- |
+|           5 |  ~65 | Strong        |
+| 6 (default) |  ~78 | Strong        |
+|           7 |  ~90 | Excellent     |
+|          10 | ~129 | Excellent     |
 
 ## Project layout
 
